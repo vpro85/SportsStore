@@ -17,44 +17,48 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngIf="cart.lines().length == 0">
-            <td colspan="4" class="text-center">Your cart is empty</td>
-          </tr>
-          <tr *ngFor="let line of cart.lines()">
-            <td>
-              <input
-                type="number"
-                class="form-control-sm"
-                style="width: 5em"
-                [value]="line.quantity"
+          @if (cart.lines().length == 0) {
+            <tr>
+              <td colspan="4" class="text-center">Your cart is empty</td>
+            </tr>
+          }
+          @for (line of cart.lines(); track line) {
+            <tr>
+              <td>
+                <input
+                  type="number"
+                  class="form-control-sm"
+                  style="width: 5em"
+                  [value]="line.quantity"
                 (change)="
                   cart.updateQuantity(line.product, $any($event).target.value)
                 "
-              />
-            </td>
-            <td>{{ line.product.name }}</td>
-            <td class="text-end">
-              {{ line.product.price | currency : "USD" : "symbol" : "2.2-2" }}
-            </td>
-            <td class="text-end">
-              {{ line.lineTotal | currency : "USD" : "symbol" : "2.2-2" }}
-            </td>
-            <td class="text-center">
-              <button
-                class="btn btn-sm btn-danger"
-                (click)="cart.removeLine(line.product.id ?? 0)"
-              >
-                Remove
-              </button>
-            </td>
-          </tr>
+                  />
+              </td>
+              <td>{{ line.product.name }}</td>
+              <td class="text-end">
+                {{ line.product.price | currency : "USD" : "symbol" : "2.2-2" }}
+              </td>
+              <td class="text-end">
+                {{ line.lineTotal | currency : "USD" : "symbol" : "2.2-2" }}
+              </td>
+              <td class="text-center">
+                <button
+                  class="btn btn-sm btn-danger"
+                  (click)="cart.removeLine(line.product.id ?? 0)"
+                  >
+                  Remove
+                </button>
+              </td>
+            </tr>
+          }
         </tbody>
         <tfoot>
           <tr>
             <td colspan="3" class="text-end">Total:</td>
             <td class="text-end">
               {{
-                cart.summary().cartPrice | currency : "USD" : "symbol" : "2.2-2"
+              cart.summary().cartPrice | currency : "USD" : "symbol" : "2.2-2"
               }}
             </td>
           </tr>
@@ -72,7 +76,7 @@
           class="btn btn-secondary m-1"
           routerLink="/checkout"
           [disabled]="cart.lines().length == 0"
-        >
+          >
           Checkout
         </button>
       </div>
