@@ -3,8 +3,8 @@ import { Product } from '../model/product.model';
 import { ProductRepository } from '../model/product.repository';
 
 @Component({
-  selector: 'store',
-  templateUrl: 'store.component.html',
+  selector: "store",
+  templateUrl: "store.component.html",
 })
 export class StoreComponent {
   products: Signal<Product[]>;
