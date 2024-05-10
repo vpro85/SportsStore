@@ -8,6 +8,7 @@ import { CheckoutComponent } from './store/checkout.component';
 import { CartDetailComponent } from './store/cartDetail.component';
 import { RouterModule } from '@angular/router';
 import { StoreFirstGuard } from './storeFirst.guard';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 
 @NgModule({
   declarations: [AppComponent],
@@ -39,7 +40,7 @@ import { StoreFirstGuard } from './storeFirst.guard';
       { path: '**', redirectTo: '/store' },
     ]),
   ],
-  providers: [StoreFirstGuard],
+  providers: [StoreFirstGuard, provideAnimationsAsync()],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
