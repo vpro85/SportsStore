@@ -3,10 +3,10 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { StoreModule } from './store/store.module';
-import { RouterModule } from '@angular/router';
 import { StoreComponent } from './store/store.component';
-import { CartDetailComponent } from './store/cartDetail.component';
 import { CheckoutComponent } from './store/checkout.component';
+import { CartDetailComponent } from './store/cartDetail.component';
+import { RouterModule } from '@angular/router';
 import { StoreFirstGuard } from './storeFirst.guard';
 
 @NgModule({
@@ -28,6 +28,12 @@ import { StoreFirstGuard } from './storeFirst.guard';
       {
         path: 'checkout',
         component: CheckoutComponent,
+        canActivate: [StoreFirstGuard],
+      },
+      {
+        path: 'admin',
+        loadChildren: () =>
+          import('./admin/admin.module').then((m) => m.AdminModule),
         canActivate: [StoreFirstGuard],
       },
       { path: '**', redirectTo: '/store' },
