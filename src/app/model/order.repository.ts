@@ -1,13 +1,52 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Order } from './order.model';
 import { Observable } from 'rxjs';
 import { RestDataSource } from './rest.datasource';
 
 @Injectable()
 export class OrderRepository {
+  private orderSignal = signal<Order[]>([]);
+  private loaded: boolean = false;
+
   constructor(private dataSource: RestDataSource) {}
 
+  loadOrders() {
+    this.loaded = true;
+    this.dataSource.getOrders().subscribe((data) => {
+      this.orderSignal.set(data);
+    });
+  }
+
+  get orders() {
+    if (!this.loaded) {
+      this.loadOrders();
+    }
+    return this.orderSignal.asReadonly();
+  }
+
   saveOrder(order: Order): Observable<Order> {
+    this.loaded = false;
     return this.dataSource.saveOrder(order);
+  }
+
+  updateOrder(order: Order) {
+    this.dataSource.updateOrder(order).subscribe((order) => {
+      this.orderSignal.update((orders) => {
+        return orders.map((o) => {
+          if (o.id == order.id) {
+            return order;
+          }
+          return o;
+        });
+      });
+    });
+  }
+
+  deleteOrder(id: number) {
+    this.dataSource.deleteOrder(id).subscribe((order) => {
+      this.orderSignal.update((orders) => {
+        return orders.filter((o) => o.id != order.id);
+      });
+    });
   }
 }
