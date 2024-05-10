@@ -20,7 +20,7 @@ let routing = RouterModule.forChild([
       { path: 'products/:mode/:id', component: ProductEditorComponent },
       { path: 'products/:mode', component: ProductEditorComponent },
       { path: 'products', component: ProductTableComponent },
-      { path: 'ordera', component: orderTableComponent },
+      { path: 'orders', component: orderTableComponent },
       { path: '**', redirectTo: 'products' },
     ],
   },
