@@ -1,5 +1,7 @@
 import { Injectable, Signal, signal } from '@angular/core';
 import { Product } from './product.model';
+import { Order } from './order.model';
+import { Observable, from } from 'rxjs';
 @Injectable()
 export class StaticDataSource {
   private data: Product[] = [
@@ -19,5 +21,11 @@ export class StaticDataSource {
     new Product(14, 'Product 14', 'Category 3', 'Product 14 (Category 3)', 100),
     new Product(15, 'Product 15', 'Category 3', 'Product 15 (Category 3)', 100),
   ];
+
   products: Signal<Product[]> = signal<Product[]>(this.data);
+
+  saveOrder(order: Order): Observable<Order> {
+    console.log(JSON.stringify(order));
+    return from([order]);
+  }
 }
