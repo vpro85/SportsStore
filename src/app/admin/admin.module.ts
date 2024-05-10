@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminComponent } from './admin.component';
 import { AuthGuard } from './auth.guard';
+import { MaterialFeatures } from './material.module';
 
 let routing = RouterModule.forChild([
   { path: 'auth', component: AuthComponent },
@@ -13,7 +14,7 @@ let routing = RouterModule.forChild([
 ]);
 
 @NgModule({
-  imports: [CommonModule, FormsModule, routing],
+  imports: [CommonModule, FormsModule, routing, MaterialFeatures],
   declarations: [AuthComponent],
   providers: [AuthGuard],
 })
