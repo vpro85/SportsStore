@@ -1,17 +1,16 @@
-import { Injectable, Signal, computed } from '@angular/core';
+import { Injectable, Signal, computed, signal } from '@angular/core';
 import { Product } from './product.model';
-import { StaticDataSource } from './static.datasource';
 import { RestDataSource } from './rest.datasource';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Injectable()
 export class ProductRepository {
-  products: Signal<Product[]>;
+  products = signal<Product[]>([]);
   categories: Signal<string[]>;
 
   constructor(private dataSource: RestDataSource) {
-    this.products = toSignal(dataSource.products, {
-      initialValue: [],
+    dataSource.products.subscribe((data) => {
+      this.products.set(data);
     });
     this.categories = computed(() => {
       return this.products()
@@ -23,5 +22,29 @@ export class ProductRepository {
 
   getProduct(id: number): Product | undefined {
     return this.products().find((p) => p.id == id);
+  }
+
+  saveProduct(product: Product) {
+    if (product.id == null || product.id == 0) {
+      this.dataSource.saveProduct(product).subscribe((p) => {
+        this.products.update((pdata) => [...pdata, p]);
+      });
+    } else {
+      this.dataSource.updateProduct(product).subscribe((p) => {
+        this.products.update((pdata) => {
+          const idx = pdata.findIndex((p) => p.id == product.id);
+          return [...pdata.slice(0, idx), product, ...pdata.slice(idx + 1)];
+        });
+      });
+    }
+  }
+
+  deleteProduct(id: number) {
+    this.dataSource.deleteProduct(id).subscribe((p) => {
+      this.products.update((pdata) => {
+        const idx = pdata.findIndex((p) => p.id == id);
+        return [...pdata.slice(0, idx - 1), ...pdata.slice(idx + 1)];
+      });
+    });
   }
 }
