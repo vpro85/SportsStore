@@ -6,16 +6,36 @@ import { FormsModule } from '@angular/forms';
 import { AdminComponent } from './admin.component';
 import { AuthGuard } from './auth.guard';
 import { MaterialFeatures } from './material.module';
+import { ProductEditorComponent } from './productEditor.component';
+import { ProductTableComponent } from './productTable.component';
+import { orderTableComponent } from './orderTable.component';
 
 let routing = RouterModule.forChild([
   { path: 'auth', component: AuthComponent },
-  { path: 'main', component: AdminComponent, canActivate: [AuthGuard] },
+  {
+    path: 'main',
+    component: AdminComponent,
+    canActivate: [AuthGuard],
+    children: [
+      { path: 'products/:mode/:id', component: ProductEditorComponent },
+      { path: 'products/:mode', component: ProductEditorComponent },
+      { path: 'products', component: ProductTableComponent },
+      { path: 'ordera', component: orderTableComponent },
+      { path: '**', redirectTo: 'products' },
+    ],
+  },
   { path: '**', redirectTo: 'auth' },
 ]);
 
 @NgModule({
   imports: [CommonModule, FormsModule, routing, MaterialFeatures],
-  declarations: [AuthComponent],
+  declarations: [
+    AuthComponent,
+    AdminComponent,
+    ProductTableComponent,
+    ProductEditorComponent,
+    orderTableComponent,
+  ],
   providers: [AuthGuard],
 })
 export class AdminModule {}
